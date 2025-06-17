@@ -12,14 +12,6 @@ const routes = [
     path: '/EmConstrucao',
     component: () => import('pages/LoandingPage.vue')
   },
-
-  {
-    path: '/teste',
-    component: () => import('layouts/MainLayout.vue'),
-    children: [
-      { path: '', component: () => import('pages/IndexPage.vue') }
-    ]
-  },
   {
     path: '/Contas',
     component: () => import('pages/Contas.vue')
