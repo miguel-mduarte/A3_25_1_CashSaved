@@ -22,6 +22,7 @@
         :conta="conta.id"
         :valor="conta.valor"
         @update-valor="updateValor(index, $event)"
+        @nova-operacao="novaOperacao"
       />
     </div>
   </div>
@@ -58,6 +59,9 @@ export default {
       if (!isNaN(novoValor) && novoValor >= 0) {
         this.contas[index].valor = novoValor
       }
+    },
+    novaOperacao(operacao) {
+      this.$emit('nova-operacao', operacao);
     }
   }
 }

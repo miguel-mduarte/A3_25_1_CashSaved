@@ -2,7 +2,8 @@
   <div>
     <TheHeader />
     <h4>Resumo Financeiro</h4>
-    <TheDashboard />
+    <TheDashboard @nova-operacao="adicionarExtrato" />
+    <TheStatement :extrato="extrato" />
     <div class="div-graficos">
       <TheGrafico />
       <TheGrafico />
@@ -17,20 +18,34 @@ import TheHeader from '../components/TheHeader.vue'
 import TheDashboard from '../components/TheDashboard.vue'
 import TheFooter from '../components/TheFooter.vue'
 import TheGrafico from '../components/TheGrafico.vue'
+import TheStatement from '../components/TheStatement.vue'
 
 
 export default {
   name: 'CashSaved',
   data() {
     return {
-
+      extrato: []
     }
   }, 
   components: {
     TheHeader,
     TheDashboard,
     TheFooter,
-    TheGrafico
+    TheGrafico,
+    TheStatement
+  },
+  methods: {
+    adicionarExtrato(operacao) {
+      this.extrato.push({
+        banco: operacao.conta,
+        valor: operacao.valor,
+        categoria: operacao.categoria,
+        tipo: operacao.tipo,
+        data: operacao.data,
+        titulo: operacao.titulo
+      });
+    }
   }
 }
 </script>
