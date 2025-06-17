@@ -1,32 +1,21 @@
 <template>
-  <div v-show="visivel" class="card">
+  <div v-show="visivel" class="card-categorias">
     <h5 class="card-title">Nova Categoria</h5>
     <form @submit.prevent="salvarCategoria">
       <div class="form-group">
         <label for="nomeCategoria">Nome</label>
-        <q-input
-          outlined
-          color="black"
-          v-model="categoria.nome"
-          label="Digite o nome da categoria"
-          :dense="dense"
-          class="input-quasar"
-        />
-      </div>
-
-      <div class="form-group">
-        <label for="valor">Valor R$</label>
         <input
-          type="number"
-          id="valor"
-          v-model="categoria.valor"
-          placeholder="Digite Valor"
+          type="text"
+          id="nomeCategoria"
+          v-model="categoria.nome"
+          placeholder="Digite o nome da categoria"
+          class="input-categoria"
         />
       </div>
 
       <div class="form-group">
         <label for="tipoCategoria">Tipo</label>
-        <select id="tipoCategoria" v-model="categoria.tipo">
+        <select id="tipoCategoria" v-model="categoria.tipo" class="input-categoria">
           <option value="entrada">Entrada</option>
           <option value="saida">Saída</option>
         </select>
@@ -39,12 +28,13 @@
           id="corCategoria"
           v-model="categoria.cor"
           title="Escolha uma cor"
+          class="input-categoria input-color"
         />
       </div>
 
       <div class="form-group">
         <label for="iconeCategoria">Ícone</label>
-        <select id="iconeCategoria" v-model="categoria.icone">
+        <select id="iconeCategoria" v-model="categoria.icone" class="input-categoria">
           <option value="bi-cart">🛒 Carrinho</option>
           <option value="bi-house">🏠 Casa</option>
           <option value="bi-car-front">🚗 Carro</option>
@@ -53,11 +43,13 @@
         </select>
       </div>
 
-      <q-btn push color="primary" label="Salvar" @click="salvarCategoria" />
+      <div class="form-btns-categorias">
+        <button type="submit" class="btn-categorias">Salvar</button>
+      </div>
     </form>
   </div>
 
-  <table class="table table-dark table-striped">
+  <table class="table-categorias">
     <thead>
       <tr>
         <th>Nome</th>
@@ -92,89 +84,160 @@ export default {
         cor: "#000000",
         icone: "bi-cart",
       },
-      categorias: [], 
+      categorias: JSON.parse(localStorage.getItem('categorias') || '[]'), 
     };
   },
   methods: {
-    salvarCategoria() {
-
-      if (this.categoria.valor == '') {
-        alert('Digite um valor')
-      } else {
-        this.categorias.push({ ...this.categoria });
-
-        this.categoria = {
-          nome: "",
-          valor: "",
-          tipo: "entrada",
-          cor: "#000000",
-          icone: "bi-cart",
-        };
-      }
-      
+    salvarCategoria() { 
+      this.categorias.push({ ...this.categoria });
+      localStorage.setItem('categorias', JSON.stringify(this.categorias));
+      this.categoria = {
+        nome: "",
+        valor: "",
+        tipo: "entrada",
+        cor: "#000000",
+        icone: "bi-cart",
+      };
+      this.$emit('categorias-atualizadas', this.categorias);
     },
   },
 };
 </script>
 
 <style scoped>
-.card {
-  background-color: #fff;
-  border-radius: 8px;
-  padding: 20px;
-  max-width: 500px;
-  margin: auto;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+.card-categorias {
+  background-color: #2c3034;
+  border-radius: 12px;
+  padding: 32px 32px 24px 32px;
+  max-width: 480px;
+  margin: 36px auto 32px auto;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
 }
 
 .card-title {
-  font-size: 20px;
+  font-size: 24px;
   margin-bottom: 20px;
-  color: #333;
+  color: #00b894;
+  text-align: center;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .form-group {
-  margin-bottom: 15px;
+  margin-bottom: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 
 label {
-  display: block;
-  margin-bottom: 6px;
   font-weight: bold;
+  color: #00b894;
+  margin-bottom: 2px;
+  font-size: 15px;
 }
 
-input[type="text"],
-input[type="number"],
-textarea,
-select,
-input[type="color"] {
+.input-categoria {
   width: 100%;
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  padding: 10px 12px;
+  border: 1.5px solid #00b894;
+  border-radius: 6px;
+  background: #23272b;
+  color: #fff;
+  font-size: 15px;
   box-sizing: border-box;
+  margin-bottom: 0;
+  transition: border 0.2s;
 }
 
-.input-quasar {
-  width: 100%;
-  padding: 8px;
-  border-radius: 4px;
-  box-sizing: border-box;
-  border-color: #000;
+.input-categoria:focus {
+  border: 2px solid #00b894;
+  outline: none;
 }
 
-textarea {
-  resize: vertical;
+.input-color {
+  height: 38px;
+  width: 54px;
+  padding: 2px;
+  border: none;
+  background: transparent;
 }
 
-#valor {
-  color: black;
+.form-btns-categorias {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
 }
 
-table {
-  margin-top: 50px !important;
-  width: 90%;
-  text-align: center;
+.btn-categorias {
+  background-color: #00b894;
+  color: #fff;
+  border: none;
+  padding: 10px 32px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s;
+  margin: 0 4px;
+}
+.btn-categorias:hover {
+  background-color: #019870;
+}
+
+.table-categorias {
+  margin-top: 24px;
   margin: auto;
+  width: 80%;
+  border-radius: 10px;
+  overflow: hidden;
+  background-color: #23272b;
+  color: #fff;
+  border-collapse: collapse;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  text-align: center;
+}
+
+.table-categorias th, .table-categorias td {
+  padding: 12px 10px;
+  text-align: center;
+}
+
+.table-categorias th {
+  background-color: #00b894;
+  color: #fff;
+  font-weight: bold;
+  font-size: 16px;
+  letter-spacing: 1px;
+}
+
+.table-categorias tr:nth-child(even) {
+  background-color: #373b3e;
+}
+
+.table-categorias tr:nth-child(odd) {
+  background-color: #23272b;
+}
+
+@media (max-width: 600px) {
+  .card-categorias {
+    padding: 12px 4px 10px 4px;
+    max-width: 98vw;
+    margin: 18px 2vw 18px 2vw;
+  }
+  .table-categorias th, .table-categorias td {
+    padding: 8px 4px;
+    font-size: 13px;
+  }
 }
 </style>
