@@ -32,38 +32,40 @@
       </form>
     </div>
 
-    <table class="table-contas" v-if="contas.length">
-      <thead>
-        <tr>
-          <th>Nome</th>
-          <th>Saldo</th>
-          <th>Ações</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="conta in contas" :key="conta.nome">
-          <td>{{ conta.nome }}</td>
-          <td>
-            R$ {{ Number(conta.saldo).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}
-          </td>
-          <td>
-            <button
-              class="btn-conta btn-excluir"
-              @click="excluirConta(conta)"
-              title="Excluir conta"
-            >
-              Excluir
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="table-contas-wrapper" v-if="contas.length">
+      <table class="table-contas">
+        <thead>
+          <tr>
+            <th>Nome</th>
+            <th>Saldo</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="conta in contas" :key="conta.nome">
+            <td>{{ conta.nome }}</td>
+            <td>
+              R$ {{ Number(conta.saldo).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}
+            </td>
+            <td>
+              <button
+                class="btn-conta btn-excluir"
+                @click="excluirConta(conta)"
+                title="Excluir conta"
+              >
+                Excluir
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'ContasPage',
+  name: 'TheAconts',
   data() {
     return {
       contas: JSON.parse(localStorage.getItem('contas') || '[]'),
@@ -98,24 +100,30 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+
 .card-contas {
-  background-color: #2c3034;
+  background-color: $secondary;
   border-radius: 12px;
   padding: 32px 32px 24px 32px;
   max-width: 480px;
   margin: 36px auto 32px auto;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.18);
-  color: #fff;
+  box-shadow: $shadow;
+  color: $text-dark;
   display: flex;
   flex-direction: column;
   gap: 18px;
+  transition: background 0.3s, color 0.3s;
+}
+body.body--light .card-contas {
+  background-color: $background-light;
+  color: $text-light;
 }
 
 .card-title {
   font-size: 24px;
   margin-bottom: 20px;
-  color: #00b894;
+  color: $primary;
   text-align: center;
   font-weight: bold;
   letter-spacing: 1px;
@@ -136,7 +144,7 @@ form {
 
 label {
   font-weight: bold;
-  color: #00b894;
+  color: $primary;
   margin-bottom: 2px;
   font-size: 15px;
 }
@@ -144,18 +152,22 @@ label {
 .input-conta {
   width: 100%;
   padding: 10px 12px;
-  border: 1.5px solid #00b894;
+  border: 1.5px solid $primary;
   border-radius: 6px;
-  background: #23272b;
-  color: #fff;
+  background: $secondary;
+  color: $text-dark;
   font-size: 15px;
   box-sizing: border-box;
   margin-bottom: 0;
-  transition: border 0.2s;
+  transition: border 0.2s, background 0.3s, color 0.3s;
+}
+body.body--light .input-conta {
+  background: $background-light;
+  color: $text-light;
 }
 
 .input-conta:focus {
-  border: 2px solid #00b894;
+  border: 2px solid $primary;
   outline: none;
 }
 
@@ -166,8 +178,8 @@ label {
 }
 
 .btn-conta {
-  background-color: #00b894;
-  color: #fff;
+  background-color: $primary;
+  color: $text-dark;
   border: none;
   padding: 10px 32px;
   border-radius: 8px;
@@ -178,7 +190,7 @@ label {
   margin: 0 4px;
 }
 .btn-conta:hover {
-  background-color: #019870;
+  background-color: $accent;
 }
 
 .table-contas {
@@ -187,11 +199,16 @@ label {
   width: 80%;
   border-radius: 10px;
   overflow: hidden;
-  background-color: #23272b;
-  color: #fff;
+  background-color: $secondary;
+  color: $text-dark;
   border-collapse: collapse;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  box-shadow: $shadow;
   text-align: center;
+  transition: background 0.3s, color 0.3s;
+}
+body.body--light .table-contas {
+  background-color: $background-light;
+  color: $text-light;
 }
 
 .table-contas th, .table-contas td {
@@ -200,24 +217,29 @@ label {
 }
 
 .table-contas th {
-  background-color: #00b894;
-  color: #fff;
+  background-color: $primary;
+  color: $text-dark;
   font-weight: bold;
   font-size: 16px;
   letter-spacing: 1px;
 }
 
 .table-contas tr:nth-child(even) {
-  background-color: #373b3e;
+  background-color: lighten($secondary, 4%);
 }
-
 .table-contas tr:nth-child(odd) {
-  background-color: #23272b;
+  background-color: $secondary;
+}
+body.body--light .table-contas tr:nth-child(even) {
+  background-color: lighten($background-light, 3%);
+}
+body.body--light .table-contas tr:nth-child(odd) {
+  background-color: $background-light;
 }
 
 .btn-excluir {
-  background-color: #dc3545;
-  color: #fff;
+  background-color: $error;
+  color: $text-dark;
   margin-left: 4px;
   padding: 8px 18px;
   border-radius: 8px;
@@ -229,19 +251,35 @@ label {
 }
 .btn-excluir:hover {
   background-color: #fff;
-  color: #dc3545;
-  border: 1px solid #dc3545;
+  color: $error;
+  border: 1px solid $error;
 }
 
 @media (max-width: 600px) {
   .card-contas {
     padding: 12px 4px 10px 4px;
     max-width: 98vw;
-    margin: 18px 2vw 18px 2vw;
+    margin: 18px 1vw 18px 1vw;
+    width: 98vw;
+    box-sizing: border-box;
+  }
+  .table-contas-wrapper {
+    width: 98vw;
+    max-width: 98vw;
+    margin: 18px 1vw 0 1vw;
+    box-sizing: border-box;
+    overflow-x: auto;
+  }
+  .table-contas {
+    width: 100%;
+    min-width: 420px;
+    table-layout: fixed;
+    font-size: 13px;
+    border-radius: 10px;
   }
   .table-contas th, .table-contas td {
     padding: 8px 4px;
-    font-size: 13px;
+    word-break: break-word;
   }
 }
 </style>

@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <div class="cashsaved-page">
     <TheHeader />
-    <h4>Resumo Financeiro</h4>
+    <h4 class="resumo-title">Resumo Financeiro</h4>
     <TheDashboard
       :contas="contas"
       @contas-atualizadas="atualizarContas"
@@ -76,13 +76,24 @@ export default {
 }
 </script>
 
-<style>
-h4 {
-    font-weight: bold;
-    color: #008469;
-    font-size: 30px;
-    text-align: center;
-    margin-top: 20px;
+<style lang="scss" scoped>
+
+.cashsaved-page {
+  background: $secondary;
+  min-height: 100vh;
+  transition: background 0.3s, color 0.3s;
+}
+
+body.body--light .cashsaved-page {
+  background: $background-light;
+}
+
+.resumo-title {
+  font-weight: bold;
+  color: $primary;
+  font-size: 30px;
+  text-align: center;
+  margin-top: 20px;
 }
 
 .div-graficos {
@@ -98,10 +109,18 @@ h4 {
 
 .div-graficos > * {
   flex: 1 1 260px;
-  min-width: 260px; /* igual ao min-width do gráfico */
+  min-width: 260px;
   max-width: 80%;
   display: flex;
   flex-direction: column;
+  background: $secondary;
+  border-radius: $radius;
+  box-shadow: $shadow;
+  transition: background 0.3s, color 0.3s;
+}
+
+body.body--light .div-graficos > * {
+  background: $background-light;
 }
 
 @media (max-width: 900px) {

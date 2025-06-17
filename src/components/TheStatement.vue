@@ -1,5 +1,5 @@
 <template>
-  <div class="statement">
+  <div class="extrato-container">
     <h2 class="section-title">Extrato</h2>
 
     <div class="filtros">
@@ -12,28 +12,30 @@
       </select>
     </div>
 
-    <table class="table-extrato">
-      <thead>
-        <tr>
-          <th>Conta</th>
-          <th>Valor</th>
-          <th>Categoria</th>
-          <th>Tipo</th>
-          <th>Data</th>
-          <th>Descrição</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="(item, idx) in extratoFiltradoOrdenado" :key="idx">
-          <td>{{ item.banco }}</td>
-          <td>R$ {{ parseFloat(item.valor).toFixed(2) }}</td>
-          <td>{{ item.categoria }}</td>
-          <td>{{ item.tipo }}</td>
-          <td>{{ formatarData(item.data) }}</td>
-          <td>{{ item.titulo }}</td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="table-extrato-wrapper">
+      <table class="table-extrato">
+        <thead>
+          <tr>
+            <th>Conta</th>
+            <th>Valor</th>
+            <th>Categoria</th>
+            <th>Tipo</th>
+            <th>Data</th>
+            <th>Descrição</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(item, idx) in extratoFiltradoOrdenado" :key="idx">
+            <td>{{ item.banco }}</td>
+            <td>R$ {{ Number(item.valor).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</td>
+            <td>{{ item.categoria }}</td>
+            <td>{{ item.tipo }}</td>
+            <td>{{ formatarData(item.data) }}</td>
+            <td>{{ item.titulo }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </template>
 
@@ -53,7 +55,6 @@ export default {
   },
   computed: {
     contasDisponiveis() {
-      // Retorna lista única de contas presentes no extrato
       return [...new Set(this.extrato.map(item => item.banco))];
     },
     extratoFiltradoOrdenado() {
@@ -61,7 +62,6 @@ export default {
       if (this.contaSelecionada) {
         lista = lista.filter(item => item.banco === this.contaSelecionada);
       }
-      // Ordena por data decrescente (mais recente primeiro)
       return lista.slice().sort((a, b) => new Date(b.data) - new Date(a.data));
     }
   },
@@ -75,21 +75,29 @@ export default {
 };
 </script>
 
-<style scoped>
-.statement {
-  background-color: #2c3034;
-  border-radius: 10px;
-  width: 80%;
-  margin: 0 auto;
-  margin-top: 20px;
+<style lang="scss" scoped>
+
+.extrato-container {
+  background: $secondary;
+  border-radius: $radius;
+  box-shadow: $shadow;
   padding: 20px;
+  width: 80%;
+  max-width: 100vw;
+  margin: 24px auto 0 auto;
+  color: $text-dark;
+  transition: background 0.3s, color 0.3s;
   display: flex;
   flex-direction: column;
   gap: 20px;
 }
+body.body--light .extrato-container {
+  background: $background-light;
+  color: $text-light;
+}
 
 .section-title {
-  color: #00b894;
+  color: $primary;
   font-size: 25px;
   font-weight: bold;
   text-align: center;
@@ -101,15 +109,13 @@ export default {
   align-items: center;
   justify-content: right;
   gap: 14px;
-  background: #23272b;
+  background: transparent;
   padding: 12px 18px;
   border-radius: 8px;
   width: 100%;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
 }
-
 .filtro-label {
-  color: #00b894;
+  color: $primary;
   font-weight: bold;
   font-size: 16px;
 }
@@ -117,64 +123,115 @@ export default {
 .filtro-select {
   padding: 7px 14px;
   border-radius: 6px;
-  border: 1px solid #00b894;
+  border: 1px solid $primary;
   font-size: 15px;
-  background: #2c3034;
-  color: #fff;
+  background: $secondary;
+  color: $text-dark;
   outline: none;
-  transition: border 0.2s;
+  transition: border 0.2s, background 0.3s, color 0.3s;
+}
+body.body--light .filtro-select {
+  background: $background-light;
+  color: $text-light;
 }
 .filtro-select:focus {
-  border: 2px solid #00b894;
+  border: 2px solid $primary;
+}
+
+.table-extrato-wrapper {
+  width: 100%;
+  overflow-x: auto;
 }
 
 .table-extrato {
   margin-top: 10px;
   width: 100%;
+  min-width: 520px;
   border-radius: 8px;
-  overflow: hidden;
-  background-color: #23272b;
-  color: #fff;
+  background-color: $secondary;
+  color: $text-dark;
   border-collapse: collapse;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  box-shadow: $shadow;
+  transition: background 0.3s, color 0.3s;
+  display: table;
+}
+body.body--light .table-extrato {
+  background-color: $background-light;
+  color: $text-light;
 }
 
 .table-extrato th, .table-extrato td {
   padding: 12px 10px;
   text-align: center;
+  word-break: break-word;
+  overflow-wrap: break-word;
 }
 
 .table-extrato th {
-  background-color: #00b894;
-  color: #fff;
+  background-color: $primary;
+  color: $text-dark;
   font-weight: bold;
   font-size: 16px;
 }
 
 .table-extrato tr:nth-child(even) {
-  background-color: #373b3e;
+  background-color: lighten($secondary, 4%);
+}
+.table-extrato tr:nth-child(odd) {
+  background-color: $secondary;
+}
+body.body--light .table-extrato tr:nth-child(even) {
+  background-color: lighten($background-light, 3%);
+}
+body.body--light .table-extrato tr:nth-child(odd) {
+  background-color: $background-light;
 }
 
-.table-extrato tr:nth-child(odd) {
-  background-color: #23272b;
+@media (max-width: 900px) {
+  .extrato-container {
+    width: 98vw;
+    padding: 10px;
+    max-width: 100vw;
+  }
+  .table-extrato {
+    min-width: 420px;
+    font-size: 13px;
+  }
 }
 
 @media (max-width: 600px) {
-  .statement {
-    margin-left: 10px;
-    margin-right: 10px;
-    padding: 10px;
+  .extrato-container {
+    width: 98vw;
+    max-width: 98vw;
+    margin: 18px 1vw 18px 1vw;
+    padding: 12px 4px 10px 4px;
+    box-sizing: border-box;
+  }
+  .table-extrato-wrapper {
+    width: 100%;
+    background: $secondary;
+    border-radius: 10px;
+    padding: 6px 0;
+    margin: 0 auto;
+    box-sizing: border-box;
+    overflow-x: auto;
+  }
+  body.body--light .table-extrato-wrapper {
+    background: $background-light;
+  }
+  .table-extrato {
+    width: 100%;
+    min-width: 340px;
+    table-layout: fixed;
+    font-size: 12px;
+    border-radius: 8px;
+    overflow: hidden;
+    display: table;
+    background: transparent;
   }
   .table-extrato th, .table-extrato td {
     padding: 8px 4px;
-    font-size: 13px;
-  }
-  .filtros {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 8px;
-    width: 100%;
-    padding: 10px 8px;
+    word-break: break-word;
   }
 }
 </style>

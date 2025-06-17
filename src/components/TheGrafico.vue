@@ -73,25 +73,41 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+
 .container-grafico {
   display: flex;
   flex-direction: row;
-  background-color: #2c3034;
+  background-color: $secondary;
   border-radius: 15px;
   padding: 32px 32px 24px 32px;
-  color: #fff;
+  color: $text-dark;
   align-items: center;
   gap: 32px;
+  transition: background 0.3s, color 0.3s;
+  flex-wrap: wrap;
+}
+body.body--light .container-grafico {
+  background-color: $background-light;
+  color: $text-light;
 }
 
 .pie-chart {
   width: 200px;
-  height: 200px;
+  max-width: 40vw;
+  aspect-ratio: 1 / 1;
+  height: auto;
   border-radius: 50%;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.18);
-  border: 4px solid #00b894;
-  background-color: #2c3034;
+  box-shadow: $shadow;
+  border: 4px solid $primary;
+  background-color: $secondary;
+  transition: background 0.3s, border 0.3s;
+  flex-shrink: 0;
+  margin: 0 auto;
+}
+body.body--light .pie-chart {
+  background-color: $background-light;
+  border-color: $primary;
 }
 
 .legend {
@@ -99,49 +115,97 @@ export default {
   flex-direction: column;
   gap: 18px;
   max-width: 220px;
+  min-width: 140px;
   flex-grow: 1;
-  background: #2c3034;
+  background: $secondary;
   border-radius: 10px;
   padding: 18px 20px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  box-shadow: $shadow;
+  transition: background 0.3s, color 0.3s;
+  font-size: 16px;
+  align-items: flex-start;
+}
+body.body--light .legend {
+  background: $background-light;
+  color: $text-light;
 }
 
 .legend-item {
   display: flex;
   align-items: center;
   gap: 12px;
-  font-size: 16px;
+  font-size: inherit;
   font-weight: 500;
-  color: #fff;
+  color: $text-dark;
   word-wrap: break-word;
+}
+body.body--light .legend-item {
+  color: $text-light;
 }
 
 .color-box {
   width: 22px;
   height: 22px;
   border-radius: 6px;
-  border: 2px solid #00b894;
+  border: 2px solid $primary;
   box-shadow: 0 1px 4px rgba(0,0,0,0.12);
 }
 
-@media (max-width: 600px) {
+@media (max-width: 1100px) {
+  .container-grafico {
+    padding: 18px 10px 14px 10px;
+    gap: 18px;
+  }
+  .pie-chart {
+    width: 150px;
+    max-width: 60vw;
+  }
+  .legend {
+    max-width: 180px;
+    font-size: 15px;
+    padding: 12px 10px;
+  }
+}
+
+@media (max-width: 900px) {
   .container-grafico {
     flex-direction: column;
     align-items: center;
     width: 98vw;
-    padding: 12px 4px 10px 4px;
+    padding: 12px 4vw 10px 4vw;
     gap: 18px;
   }
-
   .pie-chart {
-    margin-right: 0;
-    margin-bottom: 18px;
+    width: 200px;       
+    max-width: 90vw;
+    min-width: 160px;
+    margin-bottom: 12px;
   }
-
   .legend {
-    max-width: 100%;
+    max-width: 98vw;
+    min-width: unset;
+    width: 100%;
     align-items: center;
-    padding: 12px 8px;
+    font-size: 14px;
+    padding: 10px 4vw;
+  }
+}
+
+@media (max-width: 600px) {
+  .container-grafico {
+    padding: 8px 2vw 8px 2vw;
+    gap: 12px;
+  }
+  .pie-chart {
+    width: 180px;
+    max-width: 96vw;
+    min-width: 140px;
+    margin-bottom: 8px;
+  }
+  .legend {
+    font-size: 13px;
+    padding: 8px 2vw;
+    gap: 10px;
   }
 }
 </style>

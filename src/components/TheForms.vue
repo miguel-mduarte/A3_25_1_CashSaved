@@ -49,38 +49,40 @@
     </form>
   </div>
 
-  <table class="table-categorias">
-    <thead>
-      <tr>
-        <th>Nome</th>
-        <th>Receita total</th>
-        <th>Tipo</th>
-        <th>Ícone</th>
-        <th>Ações</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr v-for="cat in categoriasFiltradas" :key="cat.nome + cat.tipo + cat.cor + cat.icone">
-        <td>{{ cat.nome }}</td>
-        <td>
-          R$ {{ Number(calcularTotalCategoria(cat)).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}
-        </td>
-        <td>{{ cat.tipo }}</td>
-        <td>
-          <i :class="cat.icone" :style="{ color: cat.cor, fontSize: '1.5rem' }"></i>
-        </td>
-        <td>
-          <button
-            class="btn-categorias btn-excluir"
-            @click="excluirCategoria(cat)"
-            title="Excluir categoria"
-          >
-            Excluir
-          </button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+  <div class="table-categorias-wrapper">
+    <table class="table-categorias">
+      <thead>
+        <tr>
+          <th>Nome</th>
+          <th>Receita total</th>
+          <th>Tipo</th>
+          <th>Ícone</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="cat in categoriasFiltradas" :key="cat.nome + cat.tipo + cat.cor + cat.icone">
+          <td>{{ cat.nome }}</td>
+          <td>
+            R$ {{ Number(calcularTotalCategoria(cat)).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}
+          </td>
+          <td>{{ cat.tipo }}</td>
+          <td>
+            <i :class="cat.icone" :style="{ color: cat.cor, fontSize: '1.5rem' }"></i>
+          </td>
+          <td>
+            <button
+              class="btn-categorias btn-excluir"
+              @click="excluirCategoria(cat)"
+              title="Excluir categoria"
+            >
+              Excluir
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </template>
 
 <script>
@@ -124,7 +126,6 @@ export default {
       this.$emit('categorias-atualizadas', this.categorias);
     },
     calcularTotalCategoria(cat) {
-      // Filtra lançamentos do extrato pela categoria
       return this.extrato
         .filter(item => item.categoria === cat.nome)
         .reduce((total, item) => {
@@ -151,24 +152,30 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+
 .card-categorias {
-  background-color: #2c3034;
+  background-color: $secondary;
   border-radius: 12px;
   padding: 32px 32px 24px 32px;
   max-width: 480px;
   margin: 36px auto 32px auto;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.18);
-  color: #fff;
+  box-shadow: $shadow;
+  color: $text-dark;
   display: flex;
   flex-direction: column;
   gap: 18px;
+  transition: background 0.3s, color 0.3s;
+}
+body.body--light .card-categorias {
+  background-color: $background-light;
+  color: $text-light;
 }
 
 .card-title {
   font-size: 24px;
   margin-bottom: 20px;
-  color: #00b894;
+  color: $primary;
   text-align: center;
   font-weight: bold;
   letter-spacing: 1px;
@@ -189,7 +196,7 @@ form {
 
 label {
   font-weight: bold;
-  color: #00b894;
+  color: $primary;
   margin-bottom: 2px;
   font-size: 15px;
 }
@@ -197,18 +204,22 @@ label {
 .input-categoria {
   width: 100%;
   padding: 10px 12px;
-  border: 1.5px solid #00b894;
+  border: 1.5px solid $primary;
   border-radius: 6px;
-  background: #23272b;
-  color: #fff;
+  background: $secondary;
+  color: $text-dark;
   font-size: 15px;
   box-sizing: border-box;
   margin-bottom: 0;
-  transition: border 0.2s;
+  transition: border 0.2s, background 0.3s, color 0.3s;
+}
+body.body--light .input-categoria {
+  background: $background-light;
+  color: $text-light;
 }
 
 .input-categoria:focus {
-  border: 2px solid #00b894;
+  border: 2px solid $primary;
   outline: none;
 }
 
@@ -227,8 +238,8 @@ label {
 }
 
 .btn-categorias {
-  background-color: #00b894;
-  color: #fff;
+  background-color: $primary;
+  color: $text-dark;
   border: none;
   padding: 10px 32px;
   border-radius: 8px;
@@ -239,20 +250,30 @@ label {
   margin: 0 4px;
 }
 .btn-categorias:hover {
-  background-color: #019870;
+  background-color: $accent;
 }
 
-.table-categorias {
+.table-categorias-wrapper {
   margin-top: 24px;
   margin: auto;
   width: 80%;
   border-radius: 10px;
   overflow: hidden;
-  background-color: #23272b;
-  color: #fff;
+  background-color: $secondary;
+  color: $text-dark;
   border-collapse: collapse;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  box-shadow: $shadow;
   text-align: center;
+  transition: background 0.3s, color 0.3s;
+}
+body.body--light .table-categorias-wrapper {
+  background-color: $background-light;
+  color: $text-light;
+}
+
+.table-categorias {
+  width: 100%;
+  border-collapse: collapse;
 }
 
 .table-categorias th, .table-categorias td {
@@ -261,42 +282,69 @@ label {
 }
 
 .table-categorias th {
-  background-color: #00b894;
-  color: #fff;
+  background-color: $primary;
+  color: $text-dark;
   font-weight: bold;
   font-size: 16px;
   letter-spacing: 1px;
 }
 
 .table-categorias tr:nth-child(even) {
-  background-color: #373b3e;
+  background-color: lighten($secondary, 4%);
 }
-
 .table-categorias tr:nth-child(odd) {
-  background-color: #23272b;
+  background-color: $secondary;
+}
+body.body--light .table-categorias tr:nth-child(even) {
+  background-color: lighten($background-light, 3%);
+}
+body.body--light .table-categorias tr:nth-child(odd) {
+  background-color: $background-light;
 }
 
 .btn-excluir {
-  background-color: #dc3545;
-  color: #fff;
+  background-color: $error;
+  color: $text-dark;
   margin-left: 4px;
   padding: 8px 18px;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
 }
 .btn-excluir:hover {
   background-color: #fff;
-  color: #dc3545;
-  border: 1px solid #dc3545;
+  color: $error;
+  border: 1px solid $error;
 }
 
 @media (max-width: 600px) {
   .card-categorias {
     padding: 12px 4px 10px 4px;
     max-width: 98vw;
-    margin: 18px 2vw 18px 2vw;
+    margin: 18px 1vw 18px 1vw;
+    width: 98vw;
+    box-sizing: border-box;
+  }
+  .table-categorias-wrapper {
+    width: 98vw;
+    max-width: 98vw;
+    margin: 18px 1vw 0 1vw;
+    box-sizing: border-box;
+    overflow-x: auto;
+  }
+  .table-categorias {
+    width: 100%;
+    min-width: 420px;
+    table-layout: fixed;
+    font-size: 13px;
+    border-radius: 10px;
+    display: table;
   }
   .table-categorias th, .table-categorias td {
     padding: 8px 4px;
-    font-size: 13px;
   }
 }
 </style>

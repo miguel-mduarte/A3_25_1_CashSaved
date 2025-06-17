@@ -9,8 +9,8 @@
     </div>
 
     <div class="linha-botoes">
-      <button id="button1" @click="toggleValue">
-        {{ showValue ? 'Ocultar valor' : 'Mostrar valor' }}
+      <button class="btn-saldo" @click="toggleValue">
+        {{ showValue ? 'Ocultar Saldo' : 'Ver Saldo' }}
       </button>
     </div>
     <div class="linha-botoes">
@@ -109,7 +109,7 @@ export default {
     this.carregarCategorias();
     window.addEventListener('storage', this.carregarCategorias);
   },
-  beforeUnmount() { // <-- atualizado para o hook correto
+  beforeUnmount() {
     window.removeEventListener('storage', this.carregarCategorias);
   },
   methods: {
@@ -183,79 +183,105 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss" scoped>
+
 .container {
-  background-color: #373b3e;
+  background-color: $secondary;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin: 15px;
-  width: 100%;
-  border-radius: 10px;
-  padding: 5px;
+  width: 100%;        
+  min-width: 0;       
+  max-width: 100%;    
+  border-radius: $radius;
+  padding: 18px 10px;
+  box-shadow: $shadow;
+  transition: background 0.3s, color 0.3s;
+  color: $text-dark;
+  margin: 0;         
+  height: 100%;       
+}
+
+body.body--light .container {
+  background-color: $background-light;
+  color: $text-light;
 }
 
 .infos-conta {
   display: flex;
   flex-direction: column;
+  align-items: center;
 }
 
 #conta {
-  color: #008469;
+  color: $primary;
   font-size: 20px;
   font-weight: bold;
 }
 
 #valor {
-  color: #fff;
-  font-size: 15px;
+  color: $text-dark;
+  font-size: 18px;
   text-align: center;
 }
 
-#button1,
+body.body--light #valor {
+  color: $text-light;
+}
+
+.btn-saldo {
+  margin-top: 10px;
+  padding: 8px 16px;
+  font-size: 15px;
+  font-weight: bold;
+  border: none;
+  border-radius: $radius;
+  background-color: $primary;
+  color: $text-dark;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.btn-saldo:hover {
+  background-color: $accent;
+  color: $text-dark;
+}
+
 #button3 {
-  color: #fff;
+  background-color: $accent;
+  color: $text-dark;
   border: none;
   padding: 10px;
   border-radius: 5px;
   font-size: 15px;
   margin: 10px;
+  transition: background 0.2s, color 0.2s;
 }
-
-#button1 {
-  background-color: #0d6efd;
-}
-
-#button3 {
-  background-color: #6c757d;
-  transition: 0.5s;
-}
-
 #button3:hover {
-  color: #6c757d;
+  color: $accent;
   background-color: #FFF;
 }
 
 #button-cancelar {
-  background-color: #dc3545;
-  color: #fff;
+  background-color: $error;
+  color: $text-dark;
   border: none;
   padding: 10px;
   border-radius: 5px;
   font-size: 15px;
   margin: 10px;
-  transition: background 0.2s;
+  transition: background 0.2s, color 0.2s;
 }
 #button-cancelar:hover {
   background-color: #fff;
-  color: #dc3545;
-  border: 1px solid #dc3545;
+  color: $error;
+  border: 1px solid $error;
 }
 
 .square-btn {
-  background-color: #008469;
-  color: #fff;
+  background-color: $primary;
+  color: $text-dark;
   border: none;
   width: 40px;
   height: 40px;
@@ -269,37 +295,48 @@ export default {
   transition: background 0.2s;
 }
 .square-btn:hover {
-  background-color: #00b894;
+  background-color: $accent;
 }
 
 .red-btn {
-  background-color: #dc3545;
+  background-color: $error;
 }
 .red-btn:hover {
   background-color: #ff6b81;
 }
 
 .input-container {
-  background: #23272b;
+  background: $secondary;
   border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  box-shadow: $shadow;
   padding: 18px 20px;
   margin-top: 16px;
   display: flex;
   flex-direction: column;
   align-items: center;
   min-width: 220px;
-  border: 1.5px solid #00b894;
+  border: 1.5px solid $primary;
+  color: $text-dark;
+}
+
+body.body--light .input-container {
+  background: $background-light;
+  color: $text-light;
 }
 
 .input-valor {
   padding: 10px;
   font-size: 15px;
   border-radius: 6px;
-  border: 1.5px solid #00b894;
+  border: 1.5px solid $primary;
   margin-bottom: 12px;
-  background: #2c3034;
-  color: #fff;
+  background: $secondary;
+  color: $text-dark;
+}
+
+body.body--light .input-valor {
+  background: $background-light;
+  color: $text-light;
 }
 
 .form-btns {
@@ -311,7 +348,7 @@ export default {
   justify-content: center;
 }
 .mensagem-erro {
-  color: #dc3545;
+  color: $error;
   margin-top: 5px;
   font-size: 14px;
   text-align: center;
@@ -324,5 +361,25 @@ export default {
   justify-content: center;
   gap: 10px;
   margin-bottom: 5px;
+}
+
+@media (max-width: 1200px) {
+  .container {
+    max-width: 48vw;
+    min-width: 220px;
+  }
+}
+@media (max-width: 900px) {
+  .container {
+    max-width: 98vw;
+    min-width: 180px;
+    margin: 10px 0;
+    padding: 10px 2vw;
+  }
+  .input-container {
+    min-width: unset;
+    width: 100%;
+    padding: 12px 4px;
+  }
 }
 </style>

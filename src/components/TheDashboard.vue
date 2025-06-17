@@ -15,7 +15,7 @@
       </div>
     </div>
 
-    <div class="dashboard-cards">
+    <div class="dashboard-cards" :class="{ single: contas.length === 1 }">
       <CardDashboard
         v-for="(conta, index) in contas"
         :key="conta.nome"
@@ -60,11 +60,9 @@ export default {
     },
     updateValor(index, novoValor) {
       if (!isNaN(novoValor) && novoValor >= 0) {
-        // Crie uma cópia do array e atualize o saldo
         const novasContas = this.contas.map((conta, i) =>
           i === index ? { ...conta, saldo: novoValor } : conta
         );
-        // Emita para o pai atualizar
         this.$emit('contas-atualizadas', novasContas);
       }
     },
@@ -75,10 +73,11 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss" scoped>
+
 .dashboard {
-  background-color: #2c3034;
-  border-radius: 10px;
+  background-color: $secondary;
+  border-radius: $radius;
   width: 80%;
   margin: 0 auto;
   margin-top: 20px;
@@ -86,26 +85,51 @@ export default {
   display: flex;
   flex-direction: column;
   gap: 20px;
+  color: $text-dark;
+  box-shadow: $shadow;
+  transition: background 0.3s, color 0.3s;
 }
 
-.dashboard-cards {
+body.body--light .dashboard {
+  background-color: $background-light;
+  color: $text-light;
+}
+
+.top-section {
   display: flex;
-  justify-content: space-around;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
 }
 
 .section-title {
-  color: #00b894;
+  color: $primary;
   font-size: 25px;
   font-weight: bold;
   text-align: center;
+  margin-bottom: 10px;
 }
 
 .saldo-container {
   text-align: center;
+  background: $secondary;
+  border-radius: $radius;
+  padding: 18px 10px;
+  box-shadow: $shadow;
+  color: $text-dark;
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+  transition: background 0.3s, color 0.3s;
+}
+
+body.body--light .saldo-container {
+  background: $background-light;
+  color: $text-light;
 }
 
 .saldo-label {
-  color: #d9d9d9;
+  color: $accent;
   font-size: 22px;
   font-weight: bold;
   margin-bottom: 5px;
@@ -114,8 +138,13 @@ export default {
 .saldo-valor {
   font-size: 32px;
   font-weight: bold;
-  color: #fff;
+  color: $text-dark;
   margin: 5px 0;
+  transition: color 0.3s;
+}
+
+body.body--light .saldo-valor {
+  color: $text-light;
 }
 
 .btn-saldo {
@@ -124,21 +153,91 @@ export default {
   font-size: 15px;
   font-weight: bold;
   border: none;
-  border-radius: 8px;
-  background-color: #00b894;
-  color: #fff;
+  border-radius: $radius;
+  background-color: $primary;
+  color: $text-dark;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s, color 0.3s;
 }
 
 .btn-saldo:hover {
-  background-color: #019870;
+  background-color: $accent;
+  color: $text-dark;
 }
 
-@media (max-width: 600px) {
+.dashboard-cards {
+  display: grid;
+  gap: 24px;
+  width: 100%;
+  justify-items: stretch;
+  align-items: stretch;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+
+.dashboard-cards:only-child,
+.dashboard-cards.single {
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  gap: 24px;
+}
+
+.dashboard-cards.single > * {
+  flex: 1 1 0;
+  max-width: 100%;
+}
+
+.dashboard-cards.uma-conta {
+  grid-template-columns: 1fr;
+}
+
+.dashboard-cards.duas-contas {
+  grid-template-columns: 1fr 1fr;
+}
+
+.dashboard-cards.tres-ou-mais {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+@media (max-width: 1200px) {
+  .dashboard-cards.tres-ou-mais {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+  }
+  .dashboard-cards.duas-contas {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 900px) {
+  .dashboard {
+    width: 98vw;
+    padding: 10px;
+  }
   .dashboard-cards {
     flex-direction: column;
     gap: 10px;
+    align-items: center;
+  }
+  .saldo-container {
+    padding: 12px 4px;
+    max-width: 98vw;
+  }
+  .section-title {
+    font-size: 20px;
+  }
+  .saldo-label {
+    font-size: 18px;
+  }
+  .saldo-valor {
+    font-size: 22px;
+  }
+}
+
+@media (max-width: 700px) {
+  .dashboard-cards {
+    gap: 12px;
+    grid-template-columns: 1fr;
   }
 }
 </style>
