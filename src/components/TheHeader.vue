@@ -8,7 +8,7 @@
     <nav class="navigation">
       <ul class="nav-list">
         <li><RouterLink to="/"><i class="bi bi-house-door"></i>Dashboard</RouterLink></li>
-        <li><RouterLink to="/emConstrucao"><i class="bi bi-wallet2"></i>Contas</RouterLink></li>
+        <li><RouterLink to="/Contas"><i class="bi bi-wallet2"></i>Contas</RouterLink></li>
         <li><RouterLink to="/Categorias"><i class="bi bi-tags"></i>Categorias</RouterLink></li>
         <li><RouterLink to="/emConstrucao"><i class="bi bi-flag"></i>Metas</RouterLink></li>
         <li><RouterLink to="/emConstrucao"><i class="bi bi-graph-up"></i>Projeções</RouterLink></li>
@@ -47,7 +47,13 @@ export default {
 
 .title {
   font-size: 30px;
+  margin: 0;
   font-weight: bold;
+  color: #fff;
+}
+
+.logo-container:hover {
+  text-decoration: underline;
   color: #fff;
 }
 
@@ -71,7 +77,7 @@ export default {
 
 .nav-list li a:hover {
   color: #ccc;
-  font-size: 15px;
+  text-decoration: underline;
 }
 
 i {

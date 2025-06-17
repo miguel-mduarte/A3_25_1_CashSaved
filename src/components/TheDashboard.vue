@@ -18,9 +18,9 @@
     <div class="dashboard-cards">
       <CardDashboard
         v-for="(conta, index) in contas"
-        :key="conta.id"
-        :conta="conta.id"
-        :valor="conta.valor"
+        :key="conta.nome"
+        :conta="conta.nome"
+        :valor="Number(conta.saldo)"
         @update-valor="updateValor(index, $event)"
         @nova-operacao="novaOperacao"
       />
@@ -36,19 +36,22 @@ export default {
   components: {
     CardDashboard,
   },
+  props: {
+    contas: {
+      type: Array,
+      required: true
+    },
+  },
   data() {
     return {
       showSaldoTotal: false,
-      contas: [
-        { id: 1, valor: 500 },
-        { id: 2, valor: 200 },
-        { id: 3, valor: 300 }
-      ]
+      categorias: JSON.parse(localStorage.getItem('categorias') || '[]'),
+      extrato: JSON.parse(localStorage.getItem('extrato') || '[]')
     }
   },
   computed: {
     saldoTotal() {
-      return this.contas.reduce((acc, conta) => acc + conta.valor, 0)
+      return this.contas.reduce((acc, conta) => acc + Number(conta.saldo), 0)
     }
   },
   methods: {
@@ -57,7 +60,12 @@ export default {
     },
     updateValor(index, novoValor) {
       if (!isNaN(novoValor) && novoValor >= 0) {
-        this.contas[index].valor = novoValor
+        // Crie uma cópia do array e atualize o saldo
+        const novasContas = this.contas.map((conta, i) =>
+          i === index ? { ...conta, saldo: novoValor } : conta
+        );
+        // Emita para o pai atualizar
+        this.$emit('contas-atualizadas', novasContas);
       }
     },
     novaOperacao(operacao) {
@@ -71,8 +79,8 @@ export default {
 .dashboard {
   background-color: #2c3034;
   border-radius: 10px;
-  margin-left: 80px;
-  margin-right: 80px;
+  width: 80%;
+  margin: 0 auto;
   margin-top: 20px;
   padding: 20px;
   display: flex;

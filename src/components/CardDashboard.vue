@@ -1,8 +1,10 @@
 <template>
   <div class="container">
     <div class="infos-conta">
-      <p id="conta">Conta Banco {{ conta }}</p>
-      <p id="valor" v-if="showValue">R$ {{ valorInterno }}</p>
+      <p id="conta">{{ conta }}</p>
+      <p id="valor" v-if="showValue">
+        R$ {{ Number(valorInterno).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}
+      </p>
       <p id="valor" v-else>R$ *********</p>
     </div>
 
@@ -29,7 +31,7 @@
       />
       <select v-model="novaCategoria" class="input-valor" style="margin-bottom: 12px;">
         <option disabled value="">Selecione a categoria</option>
-        <option v-for="cat in categoriasUsuario" :key="cat.nome" :value="cat.nome">
+        <option v-for="cat in categoriasFiltradas" :key="cat.nome + cat.tipo" :value="cat.nome">
           {{ cat.nome }}
         </option>
       </select>
@@ -74,12 +76,32 @@ export default {
     return {
       showValue: false,
       valorInterno: this.valor,
-      mostrarInput: null, // null, '+', ou '-'
+      mostrarInput: null, // '+' ou '-'
       novoValor: null,
       novaCategoria: '',
       novoTitulo: '',
-      mensagemErro: '',
-      categoriasUsuario: []
+      categoriasUsuario: JSON.parse(localStorage.getItem('categorias') || '[]'),
+      visivel: true,
+      tipoAcao: "entrada", // ou "saida", altere conforme a ação do usuário
+      categoria: {
+        nome: "",
+        valor: "",
+        tipo: "entrada",
+        cor: "#000000",
+        icone: "bi-cart",
+      },
+      categorias: JSON.parse(localStorage.getItem('categorias') || '[]'), 
+    }
+  },
+
+  computed: {
+    categoriasFiltradas() {
+      if (this.mostrarInput === '+') {
+        return this.categoriasUsuario.filter(cat => cat.tipo === 'entrada');
+      } else if (this.mostrarInput === '-') {
+        return this.categoriasUsuario.filter(cat => cat.tipo === 'saida');
+      }
+      return [];
     }
   },
 
@@ -147,6 +169,10 @@ export default {
       this.novoTitulo = '';
       this.mostrarInput = null;
       this.mensagemErro = '';
+    },
+    abrirFormulario(tipo) {
+      this.tipoAcao = tipo; // tipo deve ser 'entrada' ou 'saida'
+      this.visivel = true;
     }
   },
   watch: {

@@ -53,18 +53,30 @@
     <thead>
       <tr>
         <th>Nome</th>
-        <th>Valor</th>
+        <th>Receita total</th>
         <th>Tipo</th>
         <th>Ícone</th>
+        <th>Ações</th>
       </tr>
     </thead>
     <tbody>
-      <tr v-for="(cat, index) in categorias" :key="index">
+      <tr v-for="cat in categoriasFiltradas" :key="cat.nome + cat.tipo + cat.cor + cat.icone">
         <td>{{ cat.nome }}</td>
-        <td>R$ {{ parseFloat(cat.valor).toFixed(2) }}</td>
+        <td>
+          R$ {{ Number(calcularTotalCategoria(cat)).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}
+        </td>
         <td>{{ cat.tipo }}</td>
         <td>
           <i :class="cat.icone" :style="{ color: cat.cor, fontSize: '1.5rem' }"></i>
+        </td>
+        <td>
+          <button
+            class="btn-categorias btn-excluir"
+            @click="excluirCategoria(cat)"
+            title="Excluir categoria"
+          >
+            Excluir
+          </button>
         </td>
       </tr>
     </tbody>
@@ -74,6 +86,12 @@
 <script>
 export default {
   name: "TheForms",
+  props: {
+    extrato: {
+      type: Array,
+      default: () => JSON.parse(localStorage.getItem('extrato') || '[]')
+    }
+  },
   data() {
     return {
       visivel: true,
@@ -86,6 +104,11 @@ export default {
       },
       categorias: JSON.parse(localStorage.getItem('categorias') || '[]'), 
     };
+  },
+  computed: {
+    categoriasFiltradas() {
+      return this.categorias.filter(cat => cat.nome && cat.nome.trim() !== '');
+    }
   },
   methods: {
     salvarCategoria() { 
@@ -100,6 +123,30 @@ export default {
       };
       this.$emit('categorias-atualizadas', this.categorias);
     },
+    calcularTotalCategoria(cat) {
+      // Filtra lançamentos do extrato pela categoria
+      return this.extrato
+        .filter(item => item.categoria === cat.nome)
+        .reduce((total, item) => {
+          return item.tipo === 'entrada'
+            ? total + parseFloat(item.valor)
+            : total - parseFloat(item.valor);
+        }, 0);
+    },
+    getCategoriaIndex(cat) {
+      return this.categorias.findIndex(c => c.nome === cat.nome && c.tipo === cat.tipo);
+    },
+    excluirCategoria(cat) {
+      const idx = this.categorias.findIndex(c =>
+        c.nome === cat.nome &&
+        c.tipo === cat.tipo &&
+        c.cor === cat.cor &&
+        c.icone === cat.icone
+      );
+        this.categorias.splice(idx, 1);
+        localStorage.setItem('categorias', JSON.stringify(this.categorias));
+        this.$emit('categorias-atualizadas', this.categorias);
+    }
   },
 };
 </script>
@@ -227,6 +274,18 @@ label {
 
 .table-categorias tr:nth-child(odd) {
   background-color: #23272b;
+}
+
+.btn-excluir {
+  background-color: #dc3545;
+  color: #fff;
+  margin-left: 4px;
+  padding: 8px 18px;
+}
+.btn-excluir:hover {
+  background-color: #fff;
+  color: #dc3545;
+  border: 1px solid #dc3545;
 }
 
 @media (max-width: 600px) {

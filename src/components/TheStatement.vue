@@ -79,8 +79,8 @@ export default {
 .statement {
   background-color: #2c3034;
   border-radius: 10px;
-  margin-left: 80px;
-  margin-right: 80px;
+  width: 80%;
+  margin: 0 auto;
   margin-top: 20px;
   padding: 20px;
   display: flex;
@@ -99,13 +99,12 @@ export default {
 .filtros {
   display: flex;
   align-items: center;
+  justify-content: right;
   gap: 14px;
-  margin-bottom: 18px;
   background: #23272b;
   padding: 12px 18px;
   border-radius: 8px;
-  width: fit-content;
-  align-self: flex-end;
+  width: 100%;
   box-shadow: 0 2px 8px rgba(0,0,0,0.08);
 }
 

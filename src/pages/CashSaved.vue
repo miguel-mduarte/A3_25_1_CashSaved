@@ -2,12 +2,24 @@
   <div>
     <TheHeader />
     <h4>Resumo Financeiro</h4>
-    <TheDashboard @nova-operacao="adicionarExtrato" />
+    <TheDashboard
+      :contas="contas"
+      @contas-atualizadas="atualizarContas"
+      @nova-operacao="adicionarExtrato"
+    />
     <TheStatement :extrato="extrato" />
     <div class="div-graficos">
-      <TheGrafico />
-      <TheGrafico />
-      <TheGrafico />
+      <TheGrafico
+        :categorias="categorias"
+        :extrato="extrato"
+        tipo="entrada"
+      />
+      <TheGrafico
+        :categorias="categorias"
+        :extrato="extrato"
+        tipo="saida"
+      />
+      <!-- Repita para outros gráficos se necessário -->
     </div>
     <TheFooter />
   </div>
@@ -20,14 +32,15 @@ import TheFooter from '../components/TheFooter.vue'
 import TheGrafico from '../components/TheGrafico.vue'
 import TheStatement from '../components/TheStatement.vue'
 
-
 export default {
   name: 'CashSaved',
   data() {
     return {
-      extrato: []
+      extrato: JSON.parse(localStorage.getItem('extrato') || '[]'),
+      categorias: JSON.parse(localStorage.getItem('categorias') || '[]'),
+      contas: JSON.parse(localStorage.getItem('contas') || '[]')
     }
-  }, 
+  },
   components: {
     TheHeader,
     TheDashboard,
@@ -45,7 +58,20 @@ export default {
         data: operacao.data,
         titulo: operacao.titulo
       });
-    }
+      localStorage.setItem('extrato', JSON.stringify(this.extrato));
+    },
+    atualizarCategorias(novasCategorias) {
+      this.categorias = novasCategorias;
+      localStorage.setItem('categorias', JSON.stringify(novasCategorias));
+    },
+    atualizarExtrato(novoExtrato) {
+      this.extrato = novoExtrato;
+      localStorage.setItem('extrato', JSON.stringify(novoExtrato));
+    },
+    atualizarContas(novasContas) {
+      this.contas = novasContas;
+      localStorage.setItem('contas', JSON.stringify(novasContas));
+    },
   }
 }
 </script>
@@ -60,18 +86,36 @@ h4 {
 }
 
 .div-graficos {
+  width: 80%;
+  margin: 0 auto;
   display: flex;
+  gap: 20px;
   justify-content: center;
+  align-items: stretch;
   flex-wrap: wrap;
+  padding-top: 20px;
 }
 
-@media (max-width: 600px) {
-
-.div-graficos {
+.div-graficos > * {
+  flex: 1 1 260px;
+  min-width: 260px; /* igual ao min-width do gráfico */
+  max-width: 80%;
   display: flex;
   flex-direction: column;
 }
 
+@media (max-width: 900px) {
+  .div-graficos {
+    flex-direction: column;
+    gap: 20px;
+    width: 98vw;
+    min-width: unset;
+    max-width: unset;
+  }
+  .div-graficos > * {
+    width: 100%;
+    min-width: unset;
+    max-width: unset;
+  }
 }
-
 </style>
